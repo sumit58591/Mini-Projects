@@ -4,7 +4,7 @@ const cross = document.querySelector('#close');
 const form = document.querySelector('form');
 const products = document.querySelector('.products');
 let updateIndex = null;
-const productsArr = [];
+const productsArr = JSON.parse(localStorage.getItem("products")) || [];
 
 let ui = () => {
     products.innerHTML = "";
@@ -18,14 +18,14 @@ let ui = () => {
                     <h3>${ele.productName}</h3>
                     <p>${ele.description}</p>
                     <p>${ele.price}</p>
-                </div>
+                    </div>
 
-                <div class="btns">
+                    <div class="btns">
                     <button onclick="updateProduct('${ele.productName}')" id="update">Update</button>
                     <button onclick="deleteProduct('${idx}')" id="delete">Delete</button>
-                </div>
-            </div>`
-    });
+                    </div>
+                    </div>`
+                });
 }
 
 createBtn.addEventListener('click', () => {
@@ -38,7 +38,6 @@ cross.addEventListener('click', () => {
 
 form.addEventListener('submit', (events) => {
     events.preventDefault();
-    // let productName = events.target[0].value;
     let productName = form[0].value;
     let description = form[1].value;
     let price = form[2].value;
@@ -62,9 +61,10 @@ form.addEventListener('submit', (events) => {
     if(updateIndex != null) {
         productsArr[updateIndex] = obj;
         updateIndex = null;
-
+        localStorage.setItem('products', JSON.stringify(productsArr));
     } else {
         productsArr.push(obj);
+        localStorage.setItem('products', JSON.stringify(productsArr));
     }
     
     ui();
@@ -80,10 +80,12 @@ const updateProduct = (name) => {
     form[2].value = product.price;
     form[3].value = product.image;
     formDiv.style.display = "flex";
-    update = true;
 };
 
 const deleteProduct = (id) => {
     productsArr.splice(id, 1);
+    localStorage.setItem('products', JSON.stringify(productsArr));
     ui();
 };
+
+ui();
